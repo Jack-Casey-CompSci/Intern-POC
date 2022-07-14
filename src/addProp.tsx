@@ -202,91 +202,75 @@ export default function FormPropsTextFields() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={8} lg={9}>
+              <Grid item xs={7} md={8} lg={9} container direction="column">
                 <Paper
                   sx={{
                     p: 2,
                     display: 'flex',
+                    '& .MuiTextField-root': { m: 2, width: '25ch' },
                     flexDirection: 'column',
-                    height: 240,
+                    height: 'auto',
                   }}
                 >
-                  <Box
-                    component="form"
-                    sx={{
-                      '& .MuiTextField-root': { m: 2, width: '25ch' },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <div>
+                  <div>
+                    <TextField
+                      id="outlined-address"
+                      label="Property Address"
+                      variant="outlined"
+                      onChange={(e) => {
+                        setAddress(e.target.value)
+                      }}
+                      error = {format.test(address)}
+                      helperText={format.test(address) ? "invalid address" : " "}
+                    />
+                    <TextField
+                      id="outlined-size"
+                      label="Size (sq. ft)"
+                      type= "number"
+                      variant="outlined"
+                      inputProps = {{'min': 0, step: 1000}}
+                      onChange={(e) => {
+                        setSize(Number(e.target.value))
+                      }}
+                      error = {size === 0}
+                      helperText={size === 0 ? "invalid size" : " "}
+                    />
+                    <TextField
+                      id="outlined-type"
+                      select
+                      variant="outlined"
+                      value={type}
+                      onChange={(e) => {
+                        setType(e.target.value)
+                      }}
+                      label = "Property Type"
+                    >
+                      {selectType.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                      </TextField>
                       <TextField
-                        id="outlined-address"
-                        label="Property Address"
+                        id="outlined-basic"
+                        select
+                        value={market}
                         variant="outlined"
                         onChange={(e) => {
-                          setAddress(e.target.value)
+                          setMarket(e.target.value)
                         }}
-                        error = {format.test(address)}
-                        helperText={format.test(address) ? "invalid address" : " "}
-                      />
-                      <TextField
-                        id="outlined-size"
-                        label="Size (sq. ft)"
-                        type= "number"
-                        variant="outlined"
-                        inputProps = {{'min': 0, step: 1000}}
-                        onChange={(e) => {
-                          setSize(Number(e.target.value))
-                        }}
-                        error = {size === 0}
-                        helperText={size === 0 ? "invalid size" : " "}
-                      />
-                      <FormControl sx={{ m: 2, minWidth: 160 }}>
-                        <InputLabel id="Property-Type">Property Type</InputLabel>
-                        <Select
-                          id="outlined-type"
-                          labelId="Property-Type"
-                          variant="outlined"
-                          value={type}
-                          autoWidth
-                          onChange={(e:SelectChangeEvent) => {
-                            setType(e.target.value)
-                          }}
-                          label = "Property Type"
-                        >
-                          {selectType.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                          </Select>
-                      </FormControl>
-                      <FormControl sx={{ m: 2, minWidth: 160 }}>
-                      <InputLabel id="Property-Market">Property Market</InputLabel>
-                        <Select
-                          id="outlined-basic"
-                          labelId="Property-Market"
-                          value={market}
-                          autoWidth
-                          variant="outlined"
-                          onChange={(e:SelectChangeEvent) => {
-                            setMarket(e.target.value)
-                          }}
-                          label = "Property Market"
-                        >
-                          {selectMarket.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                          </Select>
-                      </FormControl>
-                      <Button variant="contained" onClick={submitProperty} sx = {{mt: 3}}>
-                        Submit
-                      </Button>
-                    </div>
-                  </Box>
+                        label = "Property Market"
+                      >
+                        {selectMarket.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                        </TextField>
+                    <Button variant="contained" onClick={submitProperty} sx = {{mt: 3}}>
+                      Submit
+                    </Button>
+                  </div>
                 </Paper>
               </Grid>
             </Grid>
