@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import {styled, createTheme, ThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import MuiAppBar, {AppBarProps as MuiAppBarProps} from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
@@ -13,8 +13,8 @@ import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from './listItems';
-import { Button, Container, FormControl, Grid, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, TextField } from '@mui/material';
+import {mainListItems, secondaryListItems} from './listItems';
+import {Button,Container,FormControl,Grid,InputLabel,MenuItem,Paper,Select,SelectChangeEvent,TextField} from '@mui/material';
 import Axios from 'axios';
 
 const drawerWidth: number = 240;
@@ -25,7 +25,7 @@ interface AppBarProps extends MuiAppBarProps {
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open }) => ({
+})<AppBarProps>(({theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
@@ -41,8 +41,8 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
+const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})(
+  ({theme, open}) => ({
     '& .MuiDrawer-paper': {
       position: 'relative',
       whiteSpace: 'nowrap',
@@ -64,7 +64,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         },
       }),
     },
-  }),
+  })
 );
 
 const mdTheme = createTheme();
@@ -80,7 +80,7 @@ export default function FormPropsTextFields() {
 
 
   const [address, setAddress] = React.useState('');
-  const [size, setSize] = React.useState(0);
+  const [size, setSize] = React.useState<number | null>(null);
   const [type, setType] = React.useState('');
   const [market, setMarket] = React.useState('');
 
@@ -118,19 +118,29 @@ export default function FormPropsTextFields() {
     },
   ];
 
-  const submitProperty = () => {
+  const submitProperty = (e:any) => {
+    e.preventDefault();
+    console.log('in one');
+    try {
     Axios.post("http://localhost:3001/api/insert", { 
       address: address, 
       size: size,
       type: type, 
-      market: market 
-    }).then(() => {
-      alert("successful insert");
+      market: market, 
+    })
+      .then(() => {
+        console.log('in here');
+        alert("successful insert");
+      })
+      .catch((e) => {
+        debugger;
       });
-  }
+    } catch (err) {
+      debugger;
+    }  
+  };
 
   return (
-    <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
@@ -146,18 +156,12 @@ export default function FormPropsTextFields() {
               onClick={toggleDrawer}
               sx={{
                 marginRight: '36px',
-                ...(open && { display: 'none' }),
+                ...(open && {display: 'none'}),
               }}
             >
               <MenuIcon />
             </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
+            <Typography component="h1" variant="h6" color="inherit" noWrap sx={{flexGrow: 1}}>
               Dashboard
             </Typography>
             <IconButton color="inherit">
@@ -183,7 +187,7 @@ export default function FormPropsTextFields() {
           <Divider />
           <List component="nav">
             {mainListItems}
-            <Divider sx={{ my: 1 }} />
+            <Divider sx={{my: 1}} />
             {secondaryListItems}
           </List>
         </Drawer>
@@ -191,92 +195,103 @@ export default function FormPropsTextFields() {
           component="main"
           sx={{
             backgroundColor: (theme) =>
-              theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
-                : theme.palette.grey[900],
+              theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
             flexGrow: 1,
             height: '100vh',
             overflow: 'auto',
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={7} md={8} lg={9} container direction="column">
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    '& .MuiTextField-root': { m: 2, width: '25ch' },
-                    flexDirection: 'column',
-                    height: 'auto',
-                  }}
-                >
-                  <div>
-                    <TextField
-                      id="outlined-address"
-                      label="Property Address"
-                      variant="outlined"
-                      onChange={(e) => {
-                        setAddress(e.target.value)
-                      }}
-                      error = {format.test(address)}
-                      helperText={format.test(address) ? "invalid address" : " "}
-                    />
-                    <TextField
-                      id="outlined-size"
-                      label="Size (sq. ft)"
-                      type= "number"
-                      variant="outlined"
-                      inputProps = {{'min': 0, step: 1000}}
-                      onChange={(e) => {
-                        setSize(Number(e.target.value))
-                      }}
-                      error = {size === 0}
-                      helperText={size === 0 ? "invalid size" : " "}
-                    />
-                    <TextField
+          <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
+          <Box component="form" onSubmit={submitProperty} autoComplete="off">
+            <Paper sx={{mb: 3, p: 3}}>
+              <Typography variant="h4" sx={{mb: 3}}>
+                Add Property
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                <TextField
+                    fullWidth
+                    id="outlined-address"
+                    label="Property Address"
+                    required
+                    variant="outlined"
+                    onChange={(e) => {
+                      setAddress(e.target.value);
+                    }}
+                    error={format.test(address)}
+                    helperText={format.test(address) ? 'invalid address' : ' '}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    id="outlined-size"
+                    label="Size (sq. ft)"
+                    type="number"
+                    variant="outlined"
+                    required
+                    inputProps={{min: 0, max: 10000000}}
+                    onChange={(e) => {
+                      setSize(Number(e.target.value));
+                    }}
+                    error={size === 0}
+                    helperText={size === 0 ? 'invalid size' : ' '}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl sx={{minWidth: 250}}>
+                    <InputLabel id="Property-Type">Property Type</InputLabel>
+                    <Select
                       id="outlined-type"
-                      select
+                      labelId="Property-Type"
                       variant="outlined"
                       value={type}
-                      onChange={(e) => {
-                        setType(e.target.value)
+                      autoWidth
+                      onChange={(e: SelectChangeEvent) => {
+                        setType(e.target.value);
                       }}
-                      label = "Property Type"
+                      label="Property Type"
                     >
                       {selectType.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>
                       ))}
-                      </TextField>
-                      <TextField
-                        id="outlined-basic"
-                        select
-                        value={market}
-                        variant="outlined"
-                        onChange={(e) => {
-                          setMarket(e.target.value)
-                        }}
-                        label = "Property Market"
-                      >
-                        {selectMarket.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                        </TextField>
-                    <Button variant="contained" onClick={submitProperty} sx = {{mt: 3}}>
-                      Submit
-                    </Button>
-                  </div>
-                </Paper>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl sx={{minWidth: 250}}>
+                    <InputLabel id="Property-Market">Property Market</InputLabel>
+                    <Select
+                      id="outlined-basic"
+                      labelId="Property-Market"
+                      value={market}
+                      autoWidth
+                      variant="outlined"
+                      onChange={(e: SelectChangeEvent) => {
+                        setMarket(e.target.value);
+                      }}
+                      label="Property Market"
+                    >
+                      {selectMarket.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button variant="contained" type="submit" sx={{mt: 3}}>
+                    Submit
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          </Container>
-        </Box> 
+            </Paper>
+          </Box>
+        </Container>
       </Box>
-    </ThemeProvider>
+    </Box>
   );
 }
