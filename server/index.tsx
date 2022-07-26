@@ -29,9 +29,14 @@ app.post("/api/insert", (req, res) => {
     const market = req.body.market 
 
     const sqlinsert = "INSERT INTO `project_table`.`crud_table` (`address`, `size`, `type`, `market`) VALUES (?,?,?,?)"
-    db.query(sqlinsert, [address, size, type, market], (err, result) => {
-        console.log(result);
-    })   
+    try{
+        db.query(sqlinsert, [address, size, type, market], (err, result) => {
+            res.status(200).send(result)
+            console.log(result);
+        })
+    } catch (error) {
+        res.status(404).send(error)
+     }   
 });
 
 app.put("/api/update/address/:id", (req, res) => {

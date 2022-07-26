@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {styled, createTheme, ThemeProvider} from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
@@ -16,6 +16,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import {mainListItems, secondaryListItems} from './listItems';
 import {Button,Container,FormControl,Grid,InputLabel,MenuItem,Paper,Select,SelectChangeEvent,TextField} from '@mui/material';
 import Axios from 'axios';
+import { columnsStateInitializer } from '@mui/x-data-grid/internals';
 
 const drawerWidth: number = 240;
 
@@ -66,9 +67,6 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
     },
   })
 );
-
-const mdTheme = createTheme();
-
 
 export default function FormPropsTextFields() {
   const [open, setOpen] = React.useState(true);
@@ -126,17 +124,17 @@ export default function FormPropsTextFields() {
       address: address, 
       size: size,
       type: type, 
-      market: market, 
+      market: market,
     })
       .then(() => {
-        console.log('in here');
-        alert("successful insert");
-      })
-      .catch((e) => {
-        debugger;
+        alert('Success! New asset is saved to database.')
+    })
+      .catch(() => {
+        alert('Error! New asset didnt save to database.')
       });
     } catch (err) {
-      debugger;
+      console.log(err);
+      alert('Error! Database call failed to execute')
     }  
   };
 
@@ -247,6 +245,7 @@ export default function FormPropsTextFields() {
                       variant="outlined"
                       value={type}
                       autoWidth
+                      required
                       onChange={(e: SelectChangeEvent) => {
                         setType(e.target.value);
                       }}
@@ -268,6 +267,7 @@ export default function FormPropsTextFields() {
                       labelId="Property-Market"
                       value={market}
                       autoWidth
+                      required
                       variant="outlined"
                       onChange={(e: SelectChangeEvent) => {
                         setMarket(e.target.value);
